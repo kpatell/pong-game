@@ -1,4 +1,4 @@
-# pong_game
+# pong-game
 Simple Pong Game
 
 To use this SDK, download/clone the entire project to your local computer. Use Android Studio to import the folder ("Import project (Eclipse ADT, Gradle, etc.)").
