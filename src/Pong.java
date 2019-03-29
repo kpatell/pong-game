@@ -36,7 +36,8 @@ public class Pong extends JPanel {
 	private static final int WIDTH = 1600;
 	private static final int HEIGHT = 1250;
 	private static final int MOVE_PIXEL = 14;
-	private static final int PADDING_SIZE = 15;
+	private static final int PADDING_SIZE = 30;
+	private static final int POWERUP_PADDING = 50;
 	private static final int BUMPER_WIDTH = 60;
 	private static final int BUMPER_HEIGHT = 175;
 	private static final int TOP_BOTTOM_BLOCK_HEIGHT = HEIGHT / 10;
@@ -58,6 +59,7 @@ public class Pong extends JPanel {
 	private Timer timer;
 
 	private Ball ball;
+	private LongPowerup longPowerup;
 	private Bumper leftBumper;
 	private Bumper rightBumper;
 	private Bumper topConstraint;
@@ -102,6 +104,11 @@ public class Pong extends JPanel {
 		bottomConstraint.setColor(TOP_BOTTOM_BLOCK_COLOR);
 		bottomConstraint.setWidth(WIDTH);
 		bottomConstraint.setHeight(TOP_BOTTOM_BLOCK_HEIGHT);
+		
+		longPowerup = new LongPowerup((int)(Math.random() * (WIDTH - rightBumper.getWidth() - (PADDING_SIZE * 4)) + (leftBumper.getWidth() + (PADDING_SIZE * 4))), 
+				 (int)(Math.random() * (HEIGHT - bottomConstraint.getHeight() - (PADDING_SIZE * 4)) + (topConstraint.getHeight() + (PADDING_SIZE * 4))), 
+				 50, 
+				 Color.RED);
 		
 		timer = new Timer(5, new TimerListener());
 		timer.start();
@@ -228,6 +235,22 @@ public class Pong extends JPanel {
 				ball.movePong();
 			}
 			
+			// add function to the long powerup
+			if (ball.getXSpeed() > 0 && longPowerup.intersectsWith(ball)) {
+				leftBumper.setHeight(rightBumper.getHeight() + 20);
+				longPowerup.move(leftBumper.getWidth() + POWERUP_PADDING + PADDING_SIZE, 
+						rightBumper.getWidth() - POWERUP_PADDING - PADDING_SIZE, 
+						topConstraint.getHeight() + POWERUP_PADDING + PADDING_SIZE, 
+						bottomConstraint.getHeight() - POWERUP_PADDING - PADDING_SIZE);
+			} else if (ball.getXSpeed() < 0 && longPowerup.intersectsWith(ball)) {
+				rightBumper.setHeight(rightBumper.getHeight() + 20);
+				longPowerup.move(leftBumper.getWidth() + POWERUP_PADDING + PADDING_SIZE, 
+						rightBumper.getWidth() - POWERUP_PADDING - PADDING_SIZE, 
+						topConstraint.getHeight() + POWERUP_PADDING + PADDING_SIZE, 
+						bottomConstraint.getHeight() - POWERUP_PADDING - PADDING_SIZE);
+			}
+			
+			
 			BumperCollision.collide(leftBumper, ball);
 			BumperCollision.collide(rightBumper, ball);
 			BumperCollision.collide(topConstraint, ball);
@@ -264,6 +287,7 @@ public class Pong extends JPanel {
 			ball.draw(g);
 			leftBumper.draw(g);
 			rightBumper.draw(g);
+			longPowerup.draw(g);
 			
 			if (rightScore >= 10 || leftScore >= 10) {
 				GraphicsUtilities.drawBackground(g, GraphicsUtilities.randomColor(), WIDTH, HEIGHT);
@@ -297,13 +321,5 @@ public class Pong extends JPanel {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setContentPane(new Pong());
 		frame.setVisible(true);
-		
-//		Thread ballT = new Thread();
-//		Thread leftBumperT = new Thread();
-//		Thread rightBumperT = new Thread();
-//		
-//		ballT.start();
-//		leftBumperT.start();
-//		rightBumperT.start();
 	}
 }
