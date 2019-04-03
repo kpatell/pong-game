@@ -4,11 +4,6 @@
 import java.awt.Color;
 
 public class JumpingBall extends Ball {
-	private Color color;
-	private double x;
-	private double y;
-	private double diameter;
-	
 	public JumpingBall (double x, double y, double diameter, Color color) {
 		super (x, y, diameter, color);
 	}
